@@ -35,6 +35,7 @@ public class Main {
     }
 
     private static int[] sortPerSpeed(int[] result, ArrayList<ArrayList<Integer>> sortedArray){
+        int NotFound = -1;
         int man = 0;
         int speed = 0;
         int steps = 1;
@@ -67,8 +68,8 @@ public class Main {
             }
         } else{
             int index = IntStream.range(0, lstHumans.size())
-                    .filter(j -> lstHumans.get(j).equals(sortedArray.get(0)))
-                    .findFirst().orElse(-1);
+                    .filter(j -> lstHumans.get(j).equals(sortedArray.get(man)))
+                    .findFirst().orElse(NotFound);
             result[index] = sortedArray.get(man).get(speed)*sortedArray.get(man).get(steps);
         }
         return result;
