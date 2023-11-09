@@ -7,7 +7,7 @@ public class Main {
     private static ArrayList<ArrayList<Integer>> lstHumans = new ArrayList<>();
 
     public static void main (String[] args) {
-        calculation(initialize());
+        Arrays.stream(calculation(initialize())).forEach(System.out::println);
 
     }
 
@@ -18,7 +18,7 @@ public class Main {
         int humans = Integer.parseInt(sc.nextLine());
         System.out.println("Введите пары чисел скорость/количество ступеней:");
         ArrayList<Integer> arr = new ArrayList<Integer>();
-        for (int i = 0; i < humans; i++) {
+        for (int human = 0; human < humans; human++) {
             arr = Arrays.stream(sc.nextLine().split(" "))
                     .mapToInt(Integer::parseInt)
                     .boxed()
@@ -28,25 +28,28 @@ public class Main {
         return lstHumans;
     }
 
-    private static void calculation(ArrayList<ArrayList<Integer>> array){
+    private static int[] calculation(ArrayList<ArrayList<Integer>> array){
         int[] result = new int[array.size()];
         ArrayList<ArrayList<Integer>> sortedArray = new ArrayList<>(lstHumans);
-        Arrays.stream(sortPerSpeed(result, sortedArray)).forEach(System.out::println);
+        return sortPerSpeed(result, sortedArray);
     }
 
     private static int[] sortPerSpeed(int[] result, ArrayList<ArrayList<Integer>> sortedArray){
+        int man = 0;
+        int speed = 0;
+        int steps = 1;
         ArrayList<ArrayList<Integer>> max = new ArrayList<>();
-        max.add(new ArrayList<>(Arrays.asList(0, 0)));
+        max.add(new ArrayList<>(Arrays.asList(speed, steps)));
         if (sortedArray.size() > 1){
-            for (int i = 0; i < sortedArray.size(); i++){
-                if(sortedArray.get(i).get(0) > max.get(0).get(0)){
-                    max.set(0, new ArrayList<>(sortedArray.get(i)));
+            for (int manI = 0; manI < sortedArray.size(); manI++){
+                if(sortedArray.get(manI).get(speed) > max.get(man).get(speed)){
+                    max.set(man, new ArrayList<>(sortedArray.get(manI)));
                 }
             }
             int lastFoundIndex = 0;
             for (Iterator<ArrayList<Integer>> iterator = sortedArray.iterator(); iterator.hasNext(); ) {
                 ArrayList<Integer> list = iterator.next();
-                if(list.get(1) >= max.get(0).get(1)) {
+                if(list.get(steps) >= max.get(man).get(steps)) {
                     int index = -1;
                     for (int j = lastFoundIndex; j < lstHumans.size(); j++) {
                         if (lstHumans.get(j).equals(list)) {
@@ -55,7 +58,7 @@ public class Main {
                             break;
                         }
                     }
-                    result[index] = max.get(0).get(0) * max.get(0).get(1);
+                    result[index] = max.get(man).get(speed) * max.get(man).get(steps);
                     iterator.remove();
                 }
             }
@@ -66,7 +69,7 @@ public class Main {
             int index = IntStream.range(0, lstHumans.size())
                     .filter(j -> lstHumans.get(j).equals(sortedArray.get(0)))
                     .findFirst().orElse(-1);
-            result[index] = sortedArray.get(0).get(0)*sortedArray.get(0).get(1);
+            result[index] = sortedArray.get(man).get(speed)*sortedArray.get(man).get(steps);
         }
         return result;
     }
